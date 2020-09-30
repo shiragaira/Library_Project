@@ -8,4 +8,5 @@ public interface BookService {
 
     void selectBook(int id);
 
+    void close();
 }
