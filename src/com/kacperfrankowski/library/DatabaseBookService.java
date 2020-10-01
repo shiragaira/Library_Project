@@ -1,6 +1,8 @@
 package com.kacperfrankowski.library;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseBookService implements BookService {
 
@@ -22,8 +24,7 @@ public class DatabaseBookService implements BookService {
 
         public void addBook(Book book) {
             String sql = "INSERT INTO books (title,author,borrowed) VALUES (?,?,false)";
-            try (Connection connection = DriverManager.getConnection(mySqlUrl,user,password);
-                 PreparedStatement preparedStatement = connection.prepareStatement(sql) ) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
                     preparedStatement.setString(1, book.getTitle());
                     preparedStatement.setString(2, book.getAuthor());
@@ -46,7 +47,7 @@ public class DatabaseBookService implements BookService {
             }
         }
 
-        public void selectBook(int id){
+        public Book selectBook(int id){
             String sql = "SELECT id,title,author,borrowed FROM books WHERE id=?";
             try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
                 preparedStatement.setInt(1,id);
@@ -56,13 +57,32 @@ public class DatabaseBookService implements BookService {
                     int idBook = resultSet.getInt(1);
                     String titleBook = resultSet.getString(2);
                     String authorBook = resultSet.getString(3);
-                    Book book = new Book(idBook, titleBook, authorBook);
-                    System.out.println("ID: " + book.getId() + " TITLE: " + book.getTitle() + " AUTHOR: " + book.getAuthor());
+                    return new Book(idBook, titleBook, authorBook);
                 }
-
             }  catch (SQLException ex){
                 ex.getStackTrace();
             }
+            return Book.NOT_FOUND;
+        }
+
+        public List<Book> selectAllBooks(){
+            String sql = "SELECT * FROM books";
+            List<Book> listOfAllBooks = new ArrayList<>();
+            try (Statement statement = connection.createStatement()){
+                resultSet = statement.executeQuery(sql);
+
+                while(resultSet.next()){
+                    int id = resultSet.getInt(1);
+                    String title = resultSet.getString(2);
+                    String author = resultSet.getString(3);
+                    boolean isBorrowed = resultSet.getBoolean(4);
+                    listOfAllBooks.add(new Book(id,title,author,isBorrowed));
+                }
+                return listOfAllBooks;
+            }   catch (SQLException ex) {
+                ex.getStackTrace();
+            }
+            return listOfAllBooks;
         }
 
         public void close(){

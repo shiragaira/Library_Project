@@ -3,6 +3,7 @@ package com.kacperfrankowski.library.GUI;
 import com.kacperfrankowski.library.BookService;
 import com.kacperfrankowski.library.Book;
 
+import java.util.List;
 import java.util.Scanner;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -21,8 +22,9 @@ public class Gui {
         System.out.println("======================");
         System.out.println("1. Add new book");
         System.out.println("2. Remove book");
-        System.out.println("3. Edit book");
-        System.out.println("4. Exit");
+        System.out.println("3. Select book"); // This will be change to "editBook()"
+        System.out.println("4. List of books");
+        System.out.println("5. Exit");
         System.out.println("======================");
         System.out.println("What you want to do: ");
         chooseAction();
@@ -42,7 +44,11 @@ public class Gui {
                 selectBook();
                 break;
             case 4:
+                selectAllBooks();
+                break;
+            case 5:
                 close();
+                break;
 
         }
     }
@@ -95,7 +101,8 @@ public class Gui {
                 System.out.println("Which book do you want to select, put id: ");
                 int idBook = Integer.parseInt(br.readLine());
                 br.close();
-                bookService.selectBook(idBook);
+                Book book = bookService.selectBook(idBook);
+                System.out.println("TITLE: " + book.getTitle() + "\nAUTHOR: " + book.getAuthor() + "\nBORROWED: " + book.isBorrowed());
                 isValid = true;
             } catch (IOException ex) {
                 System.out.println("Data reading error");
@@ -103,6 +110,11 @@ public class Gui {
                 System.out.println("It isn't valid ID");
             }
         }
+    }
+
+    public void selectAllBooks(){
+        List<Book> listOfAllBooks = bookService.selectAllBooks();
+        listOfAllBooks.forEach(book -> System.out.println(book.getId() + " | " +  book.getTitle() + " | " + book.getAuthor() + " | " + book.isBorrowed()));
     }
 
     public void close(){

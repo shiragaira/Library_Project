@@ -2,6 +2,9 @@ package com.kacperfrankowski.library;
 
 public class Book {
 
+    //  Object that we return when we suppose it will be null;
+    public static Book NOT_FOUND = new Book("Book not found","Unknown");
+
     private int id;
     private String title;
     private String author;
@@ -14,9 +17,14 @@ public class Book {
     }
 
     public Book(int id, String title, String author){
+        this(id,title,author,false);
+    }
+
+    public Book(int id, String title, String author, boolean borrowed){
         this.id = id;
         this.title = title;
         this.author = author;
+        this.borrowed = borrowed;
     }
 
     public int getId() {
