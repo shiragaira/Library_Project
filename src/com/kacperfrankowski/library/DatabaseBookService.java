@@ -1,6 +1,5 @@
 package com.kacperfrankowski.library;
 
-import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,11 +7,10 @@ import java.util.List;
 public class DatabaseBookService implements BookService {
 
     private Connection connection = null;
-    private Statement statement = null;
     private ResultSet resultSet = null;
-    private final String mySqlUrl = "jdbc:mysql://localhost/library?serverTimezone=UTC";
-    private final String username = "root";
-    private final String password = "135elo99";
+    private String mySqlUrl = "jdbc:mysql://localhost/library?serverTimezone=UTC";
+    private String username = "root";
+    private String password = "135elo99";
 
 
     public DatabaseBookService(){
@@ -61,6 +59,7 @@ public class DatabaseBookService implements BookService {
             }
             return null;
         }
+
 
         public List<Book> getAllBooks(){
             String sql = "SELECT * FROM books";

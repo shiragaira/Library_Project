@@ -102,7 +102,7 @@ public class Gui {
 
     public void getAllBooks(){
         List<Book> listOfAllBooks = bookService.getAllBooks();
-        listOfAllBooks.forEach(book -> System.out.println(book.getId() + " | " +  book.getTitle() + " | " + book.getAuthor() + " | " + book.isBorrowed()));
+        listOfAllBooks.forEach(book -> System.out.println("ID: " + book.getId() + " | TITLE: " +  book.getTitle() + " | AUTHOR: " + book.getAuthor() + " | BORROWED: " + book.isBorrowed()));
     }
 
     public void close(){

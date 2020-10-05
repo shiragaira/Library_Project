@@ -1,6 +1,6 @@
 package com.kacperfrankowski.library;
 
-import com.kacperfrankowski.library.GUI.Gui;
+import com.kacperfrankowski.library.GUI.*;
 
 public class Main {
 
@@ -9,7 +9,6 @@ public class Main {
         BookService bookService = new DatabaseBookService();
         Gui gui = new Gui(bookService);
         gui.printMenu();
-
 
     }
 }
