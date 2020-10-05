@@ -60,6 +60,18 @@ public class DatabaseBookService implements BookService {
             return null;
         }
 
+        public void editBook(int bookId, Book updatedBook){
+            String sql = "UPDATE books SET title = ?, author = ?  WHERE id = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setString(1, updatedBook.getTitle());
+                preparedStatement.setString(2, updatedBook.getAuthor());
+                preparedStatement.setInt(3,bookId);
+                preparedStatement.executeUpdate();
+            }
+            catch (SQLException ex){
+                ex.printStackTrace();
+            }
+        }
 
         public List<Book> getAllBooks(){
             String sql = "SELECT * FROM books";

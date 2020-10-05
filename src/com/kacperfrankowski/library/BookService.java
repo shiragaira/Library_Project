@@ -12,6 +12,7 @@ public interface BookService {
 
     List<Book> getAllBooks();
 
+    void editBook(int id, Book book);
 
     void close();
 }

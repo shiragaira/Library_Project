@@ -10,6 +10,8 @@ public class Gui {
 
     private BookService bookService;
 
+    public Gui(){}
+
     public Gui(BookService bookService){
         this.bookService = bookService;
     }
@@ -19,7 +21,7 @@ public class Gui {
         System.out.println("======================");
         System.out.println("1. Add new book");
         System.out.println("2. Remove book");
-        System.out.println("3. Select book"); // This will be change to "editBook()"
+        System.out.println("3. Edit book");
         System.out.println("4. List of books");
         System.out.println("5. Exit");
         System.out.println("======================");
@@ -36,7 +38,7 @@ public class Gui {
                 deleteBook();
                 break;
             case "3":
-                getOneBook();
+                editBook();
                 break;
             case "4":
                 getAllBooks();
@@ -83,9 +85,21 @@ public class Gui {
         }
     }
 
-    public void getOneBook(){
+    public void editBook(){
+        Book editedBook = getOneBook();
         Scanner sc = new Scanner(System.in);
-        System.out.println("Which book do you want to select by ID: > ");
+        System.out.println("Change title to: ");
+        String newTitleBook = sc.nextLine();
+        System.out.println("Change author to: ");
+        String updatedBook = sc.nextLine();
+        Book newBookContent = new Book(newTitleBook, updatedBook);
+        bookService.editBook(editedBook.getId(), newBookContent);
+        System.out.println("Book has been edited");
+    }
+
+    private Book getOneBook(){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Which book do you want to edit by ID: > ");
         while(!sc.hasNextInt()){
             System.out.println("Invalid ID");
             sc.next();
@@ -98,6 +112,7 @@ public class Gui {
         else {
             System.out.println("Book has not been found");
         }
+        return book;
     }
 
     public void getAllBooks(){
