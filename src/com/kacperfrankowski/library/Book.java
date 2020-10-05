@@ -2,9 +2,6 @@ package com.kacperfrankowski.library;
 
 public class Book {
 
-    //  Object that we return when we suppose it will be null;
-    public static Book NOT_FOUND = new Book("Book not found","Unknown");
-
     private int id;
     private String title;
     private String author;

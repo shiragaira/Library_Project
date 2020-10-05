@@ -8,9 +8,10 @@ public interface BookService {
 
     void deleteBook(int id);
 
-    Book selectBook(int id);
+    Book getOneBook(int id);
 
-    List<Book> selectAllBooks();
+    List<Book> getAllBooks();
+
 
     void close();
 }
