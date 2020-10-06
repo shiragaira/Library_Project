@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface BookService {
 
-    void addBook(Book book);
+    boolean addBook(Book book);
 
     void deleteBook(int id);
 

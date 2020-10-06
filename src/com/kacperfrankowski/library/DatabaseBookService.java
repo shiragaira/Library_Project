@@ -21,15 +21,17 @@ public class DatabaseBookService implements BookService {
          }
     }
 
-        public void addBook(Book book) {
+        public boolean addBook(Book book) {
             String sql = "INSERT INTO books (title,author,borrowed) VALUES (?,?,false)";
             try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
                     preparedStatement.setString(1, book.getTitle());
                     preparedStatement.setString(2, book.getAuthor());
                     preparedStatement.executeUpdate();
+                    return true;
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
+            return false;
             }
 
         public void deleteBook(int id){
