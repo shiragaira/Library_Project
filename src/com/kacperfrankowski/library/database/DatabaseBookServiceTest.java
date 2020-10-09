@@ -1,10 +1,7 @@
 package com.kacperfrankowski.library.database;
 
 import com.kacperfrankowski.library.Book;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.sql.*;
 
@@ -12,12 +9,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DatabaseBookServiceTest {
 
-    private Connection connection;
-    private Statement statement;
-    private final DatabaseBookService databaseBookService = new DatabaseBookService();
+    private static Connection connection;
+    private static final DatabaseBookService databaseBookService = new DatabaseBookService();
 
-    @BeforeEach
-    public void init() throws SQLException {
+    @BeforeAll
+    static void init() throws SQLException {
         connection = databaseBookService.getConnection();
         connection.setAutoCommit(false);
     }
@@ -29,31 +25,38 @@ class DatabaseBookServiceTest {
 
         String testTitle = "TestTitle";
         String testAuthor = "TestAuthor";
-
-        statement = connection.createStatement();
+        Statement statement = connection.createStatement();
 
         // Check if record exist in the database
-        String sql = "SELECT * FROM books WHERE title = '" + testTitle + "' AND author = '" + testAuthor + "' AND borrowed = false";
-        ResultSet resultSet = statement.executeQuery(sql);
-        assertFalse(resultSet.next());
+        assertFalse(checkIfInDatabase(testTitle, testAuthor, statement));
 
         // If no exist add to the database
         databaseBookService.addBook(new Book(testTitle, testAuthor));
 
         // Check again if record now exist in the database
-        sql = "SELECT * FROM books WHERE title = '" + testTitle + "' AND author = '" + testAuthor + "' AND borrowed = false";
-        resultSet = statement.executeQuery(sql);
-        assertTrue(resultSet.next());
+        assertTrue(checkIfInDatabase(testTitle, testAuthor, statement));
 
-        resultSet.close();
         statement.close();
+
 
     }
 
     @AfterEach
     public void tearDown() throws SQLException {
         connection.rollback();
+    }
+
+    @AfterAll
+    static void tearDownAll() throws SQLException {
         connection.close();
+    }
+
+    public boolean checkIfInDatabase(String testTitle, String testAuthor, Statement stmt) throws SQLException {
+        String sql = "SELECT * FROM books WHERE title = '" + testTitle + "' AND author = '" + testAuthor + "' AND borrowed = false";
+        ResultSet rs = stmt.executeQuery(sql);
+        boolean inDatabase = rs.next();
+        rs.close();
+        return inDatabase;
     }
 
 
