@@ -9,17 +9,17 @@ public class Book {
     private String author;
     private boolean borrowed;
 
-    public Book(String title, String author){
+    public Book(String title, String author) {
         this.title = title;
         this.author = author;
         this.borrowed = false;
     }
 
-    public Book(int id, String title, String author){
-        this(id,title,author,false);
+    public Book(int id, String title, String author) {
+        this(id, title, author, false);
     }
 
-    public Book(int id, String title, String author, boolean borrowed){
+    public Book(int id, String title, String author, boolean borrowed) {
         this.id = id;
         this.title = title;
         this.author = author;
