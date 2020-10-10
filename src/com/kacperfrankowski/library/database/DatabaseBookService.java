@@ -24,7 +24,7 @@ public class DatabaseBookService implements BookService {
         }
     }
 
-    protected Connection getConnection(){
+    protected Connection getConnection() {
         return connection;
     }
 
@@ -87,11 +87,13 @@ public class DatabaseBookService implements BookService {
         try (Statement statement = connection.createStatement()) {
             resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
-                int bookId = resultSet.getInt(1);
-                String bookTitle = resultSet.getString(2);
-                String bookAuthor = resultSet.getString(3);
-                boolean bookIsBorrowed = resultSet.getBoolean(4);
-                listOfAllBooks.add(new Book(bookId, bookTitle, bookAuthor, bookIsBorrowed));
+                if (resultSet.getInt(1) > 0) {
+                    int bookId = resultSet.getInt(1);
+                    String bookTitle = resultSet.getString(2);
+                    String bookAuthor = resultSet.getString(3);
+                    boolean bookIsBorrowed = resultSet.getBoolean(4);
+                    listOfAllBooks.add(new Book(bookId, bookTitle, bookAuthor, bookIsBorrowed));
+                }
             }
             return listOfAllBooks;
 
