@@ -9,18 +9,18 @@ import java.util.List;
 
 public class DatabaseBookService implements BookService {
 
-    private Connection connection = null;
+    private Connection connection;
     private ResultSet resultSet = null;
     private String mySqlUrl = "jdbc:mysql://localhost/library?serverTimezone=UTC";
     private String username = "root";
     private String password = "135elo99";
 
 
-    public DatabaseBookService() {
+    public DatabaseBookService() throws RuntimeException {
         try {
             this.connection = DriverManager.getConnection(mySqlUrl, username, password);
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            throw new RuntimeException(ex);
         }
     }
 
@@ -28,7 +28,7 @@ public class DatabaseBookService implements BookService {
         return connection;
     }
 
-    public boolean addBook(Book book) {
+    public boolean addBook(Book book) throws RuntimeException {
         String sql = "INSERT INTO books (title,author,borrowed) VALUES (?,?,false)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, book.getTitle());
@@ -36,22 +36,21 @@ public class DatabaseBookService implements BookService {
             preparedStatement.executeUpdate();
             return true;
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            throw new RuntimeException(ex);
         }
-        return false;
     }
 
-    public void deleteBook(int id) {
+    public void deleteBook(int id) throws RuntimeException {
         String sql = "DELETE FROM books WHERE id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            throw new RuntimeException(ex);
         }
     }
 
-    public Book getOneBook(int id) {
+    public Book getOneBook(int id) throws RuntimeException {
         String sql = "SELECT id,title,author,borrowed FROM books WHERE id=?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, id);
@@ -64,12 +63,12 @@ public class DatabaseBookService implements BookService {
                 return new Book(idBook, titleBook, authorBook);
             }
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            throw new RuntimeException(ex);
         }
         return null;
     }
 
-    public void editBook(int bookId, Book updatedBook) {
+    public void editBook(int bookId, Book updatedBook) throws RuntimeException {
         String sql = "UPDATE books SET title = ?, author = ?  WHERE id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, updatedBook.getTitle());
@@ -77,11 +76,11 @@ public class DatabaseBookService implements BookService {
             preparedStatement.setInt(3, bookId);
             preparedStatement.executeUpdate();
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            throw new RuntimeException(ex);
         }
     }
 
-    public List<Book> getAllBooks() {
+    public List<Book> getAllBooks() throws RuntimeException{
         String sql = "SELECT * FROM books";
         List<Book> listOfAllBooks = new ArrayList<>();
         try (Statement statement = connection.createStatement()) {
@@ -98,17 +97,16 @@ public class DatabaseBookService implements BookService {
             return listOfAllBooks;
 
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            throw new RuntimeException(ex);
         }
-        return listOfAllBooks;
     }
 
 
-    public void close() {
+    public void close() throws RuntimeException {
         try {
             connection.close();
         } catch (SQLException ex) {
-            ex.getStackTrace();
+            throw new RuntimeException(ex);
         }
     }
 

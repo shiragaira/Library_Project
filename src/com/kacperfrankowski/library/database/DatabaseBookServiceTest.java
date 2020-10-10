@@ -29,13 +29,13 @@ class DatabaseBookServiceTest {
         try (Statement statement = connection.createStatement()) {
 
             // Check if record exist in the database
-            assertFalse(checkIfInDatabaseByTitle(testTitle, testAuthor, statement));
+            assertFalse(checkIfInDatabaseByTitleAuthorAndBorrowed(testTitle, testAuthor, statement));
 
             // If no exist add to the database
             databaseBookService.addBook(new Book(testTitle, testAuthor));
 
             // Check again if record now exist in the database
-            assertTrue(checkIfInDatabaseByTitle(testTitle, testAuthor, statement));
+            assertTrue(checkIfInDatabaseByTitleAuthorAndBorrowed(testTitle, testAuthor, statement));
         }
     }
 
@@ -43,12 +43,14 @@ class DatabaseBookServiceTest {
     @DisplayName("Test functionality removing book from database")
     public void testRemovingBookFromDatabase() throws SQLException {
 
-        // Testing record (-1,"testedByIdTitle","testedByIdAuthor, false)
         int testId = -1;
 
         try (Statement statement = connection.createStatement()) {
 
-            // Check if record exist in the database
+            // Add book to the database
+            statement.executeUpdate("INSERT INTO books (id,title,author,borrowed) VALUES (" + testId + ",'testTitle','testAuthor',false)");
+
+            // Check if book exist now
             assertTrue(checkIfInDatabaseById(testId, statement));
 
             // If exist try remove it from database
@@ -58,27 +60,6 @@ class DatabaseBookServiceTest {
             assertFalse(checkIfInDatabaseById(testId, statement));
         }
     }
-
-    @Test
-    @DisplayName("Test functionality getting one book from database")
-    public void testGettingOneBookFromDatabase() throws SQLException {
-
-        // Testing book with data from existing record in Database
-        Book testingBook = new Book(-1, "testByIdTitle", "testByIdAuthor", false);
-
-        try (Statement statement = connection.createStatement()) {
-            Book bookFromDatabase = databaseBookService.getOneBook(testingBook.getId());
-            // If book exist check all variables
-            if (bookFromDatabase != null) {
-                assertEquals(bookFromDatabase, testingBook);
-            }
-            // If book doesn't exist check if is null
-            else {
-                assertNull(bookFromDatabase);
-            }
-        }
-    }
-
 
     @AfterEach
     public void tearDown() throws SQLException {
@@ -90,14 +71,14 @@ class DatabaseBookServiceTest {
         connection.close();
     }
 
-    public boolean checkIfInDatabaseByTitle(String testTitle, String testAuthor, Statement stmt) throws SQLException {
+    private boolean checkIfInDatabaseByTitleAuthorAndBorrowed(String testTitle, String testAuthor, Statement stmt) throws SQLException {
         String sql = "SELECT * FROM books WHERE title = '" + testTitle + "' AND author = '" + testAuthor + "' AND borrowed = false";
         try (ResultSet resultSet = stmt.executeQuery(sql)) {
             return resultSet.next();
         }
     }
 
-    public boolean checkIfInDatabaseById(int testId, Statement stmt) throws SQLException {
+    private boolean checkIfInDatabaseById(int testId, Statement stmt) throws SQLException {
         String sql = "SELECT * FROM books WHERE id = " + testId;
         try (ResultSet resultSet = stmt.executeQuery(sql)) {
             return resultSet.next();
