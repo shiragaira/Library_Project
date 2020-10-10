@@ -22,22 +22,21 @@ class DatabaseBookServiceTest {
     @Test
     @DisplayName("Test functionality adding book to the database")
     public void testAddingBookToDatabase() throws SQLException {
+        try (Statement statement = connection.createStatement()) {
 
-        String testTitle = "TestTitle";
-        String testAuthor = "TestAuthor";
-        Statement statement = connection.createStatement();
+            String testTitle = "TestTitle";
+            String testAuthor = "TestAuthor";
 
-        // Check if record exist in the database
-        assertFalse(checkIfInDatabase(testTitle, testAuthor, statement));
+            // Check if record exist in the database
+            assertFalse(checkIfInDatabase(testTitle, testAuthor, statement));
 
-        // If no exist add to the database
-        databaseBookService.addBook(new Book(testTitle, testAuthor));
+            // If no exist add to the database
+            databaseBookService.addBook(new Book(testTitle, testAuthor));
 
-        // Check again if record now exist in the database
-        assertTrue(checkIfInDatabase(testTitle, testAuthor, statement));
+            // Check again if record now exist in the database
+            assertTrue(checkIfInDatabase(testTitle, testAuthor, statement));
 
-        statement.close();
-
+        }
 
     }
 
@@ -52,11 +51,13 @@ class DatabaseBookServiceTest {
     }
 
     public boolean checkIfInDatabase(String testTitle, String testAuthor, Statement stmt) throws SQLException {
+
         String sql = "SELECT * FROM books WHERE title = '" + testTitle + "' AND author = '" + testAuthor + "' AND borrowed = false";
-        ResultSet rs = stmt.executeQuery(sql);
-        boolean inDatabase = rs.next();
-        rs.close();
-        return inDatabase;
+        try (ResultSet resultSet = stmt.executeQuery(sql)) {
+            ResultSet rs = stmt.executeQuery(sql);
+            return rs.next();
+        }
+
     }
 
 
